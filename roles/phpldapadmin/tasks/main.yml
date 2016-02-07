@@ -1,0 +1,44 @@
+---
+
+- name: Install APT packages
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    cache_valid_time: 3600
+  with_items:
+    - phpldapadmin
+
+- name: Template phpldapadmin config.php
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner | default('www-data') }}"
+    group: "{{ item.group | default('www-data') }}"
+    backup: yes
+  with_items: phpldapadmin_templates
+
+- name: Enable Mod SSL
+  apache2_module: state=present name=ssl
+
+- name: Ensure apache2 default sites are disabled
+  command: "a2dissite {{ item }}"
+  with_items:
+    - "000-default.conf"
+    - "default-ssl.conf"
+
+- name: Enable apache2 phpldapadmin site is enabled
+  command: "a2ensite {{ item }}"
+  with_items:
+    - "ldap.conf"
+    - "ldap_ssl.conf"
+
+- name: Ensure template is fixed
+  lineinfile:
+    dest: "/usr/share/phpldapadmin/lib/TemplateRender.php"
+    regexp: "'appearance','password_hash.*$"
+    line: "$default = $this->getServer()->getValue('appearance','password_hash_custom');"
+
+- name: Restart apache
+  service:
+    name: apache2
+    state: restarted

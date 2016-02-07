@@ -1,0 +1,34 @@
+---
+
+phpldapadmin_server_host: "127.0.0.1"
+phpldapadmin_server_base: "dc=example,dc=com"
+phpldapadmin_login_bind_id: "cn=admin,dc=example,dc=com"
+phpldapadmin_server_tls: "false"
+phpldapadmin_hide_template_warning: "false"
+#phpldapadmin_debug_level: "255"
+
+phpldapadmin_certs_dir: "/etc/ssl/{{ inventory_hostname }}"
+#phpldapadmin_cert_request_path: "{{ phpldapadmin_certs_dir }}/{{ inventory_hostname }}/{{ inventory_hostname }}.crt"
+phpldapadmin_key_path: "{{ phpldapadmin_certs_dir }}/{{ inventory_hostname }}.key"
+phpldapadmin_cert_path: "{{ phpldapadmin_certs_dir }}/{{ inventory_hostname }}.crt"
+#phpldapadmin_server_country: "US"
+#phpldapadmin_server_state: "CO"
+#phpldapadmin_server_location: "Denver"
+#phpldapadmin_server_organization: "IT"
+
+phpldapadmin_apache_conf: "/etc/phpldapadmin/apache.conf"
+phpldapadmin_apache_hostname: "{{ inventory_hostname }}"
+phpldapadmin_apache_server_admin: "webmaster@{{ phpldapadmin_apache_hostname }}"
+phpldapadmin_server_alias: "phpldapadmin"
+phpldapadmin_apache_server_document_root: "/var/www/html"
+phpldapadmin_auth_htpasswd_path: "/etc/apache2/htpasswd"
+
+phpldapadmin_templates:
+  - src: "etc/phpldapadmin/config.php"
+    dest: "/etc/phpldapadmin/config.php"
+  - src: "etc/phpldapadmin/apache.conf"
+    dest: "/etc/phpldapadmin/apache.conf"
+  - src: "etc/apache2/sites-available/ldap.conf"
+    dest: "/etc/apache2/sites-available/ldap.conf"
+  - src: "etc/apache2/sites-available/ldap_ssl.conf"
+    dest: "/etc/apache2/sites-available/ldap_ssl.conf"

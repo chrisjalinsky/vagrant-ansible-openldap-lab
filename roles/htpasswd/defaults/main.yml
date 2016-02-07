@@ -1,0 +1,9 @@
+---
+
+htpasswd_path: "/etc/apache2/htpasswd"
+htpasswd_users: []
+#htpasswd_users:
+#  - user: username1
+#    password: passwd1
+#  - user: username2
+#    password: passwd2

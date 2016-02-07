@@ -1,0 +1,61 @@
+---
+
+grafana_version: 2.6.0
+grafana_deb_name: grafana
+grafana_unarchive_prefix: /tmp
+grafana_conf_dir: /etc/grafana
+grafana_service: grafana-server
+
+grafana_ini_vars:
+  - name: "paths"
+  - name: "server"
+  - name: "database"
+  - name: "session"
+  - name: "analytics"
+  - name: "security"
+  - name: "users"
+  - name: "auth.anonymous"
+  - name: "auth.github"
+  - name: "auth.google"
+  - name: "auth.proxy"
+  - name: "auth.basic"
+  - name: "auth.ldap"
+  - name: "smtp"
+  - name: "emails"
+  - name: "log"
+  - name: "log.file"
+  - name: "dashboards.json"
+    vars:
+      - enabled: "false"
+      - path: "/var/lib/grafana/dashboards"
+
+grafana_ldap_host: "127.0.0.1"
+grafana_ldap_port: "389"
+grafana_ldap_use_ssl: "false"
+grafana_ldap_ssl_skip_verify: "false"
+grafana_ldap_root_ca_cert: ""
+grafana_ldap_bind_dn: "cn=admin,dc=example,dc=com"
+grafana_ldap_bind_password: "adminpass"
+grafana_ldap_search_filter: "(cn=%s)"
+grafana_ldap_search_base_dns: '["dc=example,dc=com"]'
+
+grafana_ldap_group_search_filter: ""
+# grafana_ldap_group_search_filter: "(&(objectClass=posixGroup)(memberUid=%s))"
+
+grafana_ldap_group_search_base_dns: ""
+# grafana_ldap_group_search_base_dns: '["ou=groups,dc=mldap0,dc=lan"]'
+
+grafana_ldap_server_attr_name: "givenName"
+grafana_ldap_server_attr_surname: "sn"
+grafana_ldap_server_attr_username: "cn"
+
+# This one depends on group search settings. By default it is memberOf
+grafana_ldap_server_attr_member_of: "memberOf"
+grafana_ldap_server_attr_email:  "email"
+
+grafana_ldap_admin_group_mappings: "cn=administrators,ou=groups,dc=mldap0,dc=lan"
+grafana_ldap_editor_group_mappings: "cn=editors,ou=groups,dc=mldap0,dc=lan"
+grafana_ldap_viewer_group_mappings: "*"
+
+
+

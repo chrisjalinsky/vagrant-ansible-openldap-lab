@@ -1,0 +1,62 @@
+---
+
+- name: Debconf
+  debconf:
+    name: 'slapd'
+    question: "{{ item.question }}"
+    value: "{{ item.value }}"
+    vtype: "{{ item.vtype }}"
+  with_items: "{{ openldap_debconfs }}"
+
+- name: Install Apt Packages
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    cache_valid_time: 3600
+  with_items:
+    - slapd
+    - ldap-utils
+
+
+#- name: Generate the root password for ldap
+#  shell: "slappasswd -s {{ openldap_slapd_admin_rootpw }}"
+#  register: root_password
+
+- name: Template ldap.conf
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "0754"
+    backup: yes
+  with_items:
+    - src: "ldap.conf"
+      dest: "/etc/ldap/ldap.conf"
+    - src: "base.ldif"
+      dest: "/etc/ldap/base.ldif"
+
+#- name: dpkg reconfigure
+#  command: "dpkg-reconfigure -f noninteractive slapd"
+
+- name: add the base domain
+  shell: ldapadd -x -D {{ openldap_slapd_admin }} -w {{ openldap_slapd_admin_rootpw }} -f /etc/ldap/base.ldif && touch /etc/ldap/rootdn_created
+  args:
+    creates: "/etc/ldap/rootdn_created" 
+
+#
+#- name: Delete the configuration directory
+#  file: path="/etc/ldap/slapd.d" state=absent
+#
+#- name: Generate new config
+#  command: "slaptest -f /etc/ldap/slapd.conf -F /etc/ldap/slapd.d/"
+#
+#- name: Ensure ldap directory owned by ldap
+#  file:
+#    dest: "/etc/ldap/slapd.d"
+#    state: directory
+#    owner: openldap
+#    group: openldap
+#    recurse: yes
+#
+#- name: restart slapd
+#  service: name=slapd state=restarted
+  

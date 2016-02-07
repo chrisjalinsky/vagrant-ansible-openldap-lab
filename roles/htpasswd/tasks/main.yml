@@ -1,0 +1,19 @@
+---
+
+- name: Install apache2-utils for htpasswd
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    cache_valid_time: 3600
+  with_items:
+    - "python-passlib"
+    - "apache2"
+    - "apache2-utils"
+
+- name: Add users to htpasswd
+  htpasswd:
+    path: "{{ htpasswd_path }}"
+    name: "{{ item.user }}"
+    password: "{{ item.password }}"
+  with_items: htpasswd_users
+  #no_log: yes

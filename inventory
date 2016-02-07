@@ -1,0 +1,9 @@
+[master_ldaps]
+mldap0.lan
+
+[slave_ldaps]
+sldap0.lan
+
+[all:children]
+master_ldaps
+slave_ldaps

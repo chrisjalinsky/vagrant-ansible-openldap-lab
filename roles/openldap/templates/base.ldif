@@ -1,0 +1,80 @@
+# Entry 3: cn=master,dc=mldap0,dc=lan
+dn: cn=master,dc=mldap0,dc=lan
+cn: master
+description: LDAP administrator
+objectclass: simpleSecurityObject
+objectclass: organizationalRole
+userpassword: {SSHA}Pem5m+GSvceEf5JL+N6ZTL33tOMSc2Zv
+
+# Entry 4: ou=groups,dc=mldap0,dc=lan
+dn: ou=groups,dc=mldap0,dc=lan
+objectclass: organizationalUnit
+ou: groups
+
+# Entry 5: cn=admin,ou=groups,dc=mldap0,dc=lan
+dn: cn=admin,ou=groups,dc=mldap0,dc=lan
+cn: admin
+gidnumber: 500
+memberuid: jballgame
+memberuid: ftank
+objectclass: posixGroup
+objectclass: top
+
+# Entry 6: cn=editors,ou=groups,dc=mldap0,dc=lan
+dn: cn=editors,ou=groups,dc=mldap0,dc=lan
+cn: editors
+gidnumber: 501
+memberuid: hgilmore
+memberuid: ftank
+objectclass: posixGroup
+objectclass: top
+
+# Entry 7: ou=users,dc=mldap0,dc=lan
+dn: ou=users,dc=mldap0,dc=lan
+objectclass: organizationalUnit
+ou: users
+
+# Entry 8: cn=frank tank,ou=users,dc=mldap0,dc=lan
+dn: cn=frank tank,ou=users,dc=mldap0,dc=lan
+cn: frank tank
+gidnumber: 501
+givenname: frank
+homedirectory: /home/users/ftank
+loginshell: /bin/sh
+objectclass: inetOrgPerson
+objectclass: posixAccount
+objectclass: top
+sn: tank
+uid: ftank
+uidnumber: 1003
+userpassword: {SSHA}vzFuEtFyeRXp1TtGepUmkjtqp3iMvNJB
+
+# Entry 9: cn=happy gilmore,ou=users,dc=mldap0,dc=lan
+dn: cn=happy gilmore,ou=users,dc=mldap0,dc=lan
+cn: happy gilmore
+gidnumber: 501
+givenname: happy
+homedirectory: /home/users/hgilmore
+loginshell: /bin/sh
+objectclass: inetOrgPerson
+objectclass: posixAccount
+objectclass: top
+sn: gilmore
+uid: hgilmore
+uidnumber: 1002
+userpassword: {SSHA}JQ46RunymtxvtNAxEl5z3+bXaRfH99iH
+
+# Entry 10: cn=johnny ballgame,ou=users,dc=mldap0,dc=lan
+dn: cn=johnny ballgame,ou=users,dc=mldap0,dc=lan
+cn: johnny ballgame
+gidnumber: 501
+givenname: johnny
+homedirectory: /home/users/jballgame
+loginshell: /bin/sh
+objectclass: inetOrgPerson
+objectclass: posixAccount
+objectclass: top
+sn: ballgame
+uid: jballgame
+uidnumber: 1001
+userpassword: {SSHA}tKUbW+ChlH1Pu6tf71KAlMDxPE7iLeEx

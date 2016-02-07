@@ -1,0 +1,114 @@
+---
+
+- hosts: all
+  become: yes
+  gather_facts: yes
+  roles:
+    - role: common
+
+- hosts: master_ldaps
+  become: yes
+  roles:
+    - role: openssl
+    - role: openldap
+      openldap_slapd_tls_cert: "/etc/ssl/{{ inventory_hostname}}/{{ inventory_hostname}}.pem"
+      openldap_slapd_tls_key: "/etc/ssl/{{ inventory_hostname}}/{{ inventory_hostname}}.key"
+      openldap_slapd_domain: "mldap0.lan"
+      openldap_slapd_suffix: "dc=mldap0,dc=lan"
+      openldap_slapd_admin: "cn=admin,dc=mldap0,dc=lan"
+      openldap_slapd_admin_rootpw: admin12345
+    - role: htpasswd
+      htpasswd_users:
+        - user: demo
+          password: demopw
+    - role: phpldapadmin
+      phpldapadmin_server_host: "mldap0.lan"
+      phpldapadmin_server_base: "dc=mldap0,dc=lan"
+      phpldapadmin_login_bind_id: "cn=admin,dc=mldap0,dc=lan"
+      phpldapadmin_hide_template_warning: "true"
+      phpldapadmin_server_tls: "true"
+      phpldapadmin_debug_level: "255"
+
+- hosts: slave_ldaps
+  become: yes
+  become_user: root
+  roles:
+    - role: openssl
+    - role: grafana
+      grafana_version: 2.6.0
+      grafana_ini_vars:
+        - name: "paths"
+        - name: "server"
+        - name: "database"
+        - name: "session"
+        - name: "analytics"
+        - name: "security"
+        - name: "users"
+        - name: "auth.anonymous"
+        - name: "auth.github"
+        - name: "auth.google"
+        - name: "auth.proxy"
+        - name: "auth.basic"
+        - name: "auth.ldap"
+          vars:
+            - enabled: true
+            - config_path: "/etc/grafana/ldap.toml"
+        - name: "smtp"
+        - name: "emails"
+        - name: "log"
+        - name: "log.file"
+        - name: "dashboards.json"
+          vars:
+            - enabled: "false"
+            - path: "/var/lib/grafana/dashboards"
+      grafana_ldap_host: "mldap0.lan"
+      grafana_ldap_bind_dn: "cn=admin,dc=mldap0,dc=lan"
+      grafana_ldap_bind_password: admin12345
+      grafana_ldap_search_filter: "(cn=%s)"
+      grafana_ldap_search_base_dns: '["dc=mldap0,dc=lan"]'
+      grafana_ldap_group_search_filter: "(&(objectClass=posixGroup)(memberUid=%s))"
+      grafana_ldap_group_search_base_dns: '["ou=groups,dc=mldap0,dc=lan"]'
+      grafana_ldap_server_attr_member_of: "cn"
+    - role: openldap_client
+      openldap_client_nsswitch_passwd: "ldap compat"
+      openldap_client_nsswitch_group: "ldap compat"
+      openldap_client_nsswitch_shadow: "ldap compat"
+      openldap_client_pamd_session:
+        - "session required    pam_mkhomedir.so skel=/etc/skel umask=0022"
+      openldap_client_ldap_auth_config:
+        - question: "ldap-auth-config/binddn"
+          value: "cn=proxyuser,dc=example,dc=net"
+          vtype: "string"
+        - question: "ldap-auth-config/bindpw"
+          value: ""
+          vtype: "password"
+        - question: "ldap-auth-config/dblogin"
+          value: "false"
+          vtype: "boolean"
+        - question: "ldap-auth-config/dbrootlogin"
+          value: "true"
+          vtype: "boolean"
+        - question: "ldap-auth-config/ldapns/base-dn"
+          value: "dc=mldap0,dc=lan"
+          vtype: "string"
+        - question: "ldap-auth-config/ldapns/ldap-server"
+          value: "ldap://mldap0.lan"
+          vtype: "string"
+        - question: "ldap-auth-config/ldapns/ldap_version"
+          value: "3"
+          vtype: "select"
+        - question: "ldap-auth-config/move-to-debconf"
+          value: "true"
+          vtype: "boolean"
+        - question: "ldap-auth-config/override"
+          value: "true"
+          vtype: "boolean"
+        - question: "ldap-auth-config/pam_password"
+          value: "md5"
+          vtype: "select"
+        - question: "ldap-auth-config/rootbinddn"
+          value: "cn=admin,dc=mldap0,dc=lan"
+          vtype: "string"
+        - question: "ldap-auth-config/rootbindpw"
+          value: admin12345
+          vtype: "password"
