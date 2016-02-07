@@ -8,7 +8,7 @@ Additional goals include extracting all configuration into the Ansible playbook 
 Vagrant
 =======
 
-I like to use the super helpful (vagrant-hostmanager plugin)[https://github.com/smdahlen/vagrant-hostmanager], which essentially creates host entries on your dev machine.
+I like to use the super helpful [vagrant-hostmanager plugin](https://github.com/smdahlen/vagrant-hostmanager), which essentially creates host entries on your dev machine.
 
 Otherwise, you have to manually add the entries, or strictly use ip addresses and leave DNS out of the equation.
 
@@ -47,9 +47,9 @@ Resources
 
 Thanks to the authors of the following resources used to build these roles. Check them out for more information:
 
-* (Digital Ocean - How To Install and Configure OpenLDAP and phpLDAPadmin on an Ubuntu 14.04 Server)[https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-openldap-and-phpldapadmin-on-an-ubuntu-14-04-server]
-* (Digital Ocean - How To Install and Configure a Basic LDAP Server on an Ubuntu 12.04 VPS)[https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-a-basic-ldap-server-on-an-ubuntu-12-04-vps]
-* (Digital Ocean - How To Authenticate Client Computers Using LDAP on an Ubuntu 12.04 VPS)[https://www.digitalocean.com/community/tutorials/how-to-authenticate-client-computers-using-ldap-on-an-ubuntu-12-04-vps]
+* [Digital Ocean - How To Install and Configure OpenLDAP and phpLDAPadmin on an Ubuntu 14.04 Server](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-openldap-and-phpldapadmin-on-an-ubuntu-14-04-server)
+* [Digital Ocean - How To Install and Configure a Basic LDAP Server on an Ubuntu 12.04 VPS](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-a-basic-ldap-server-on-an-ubuntu-12-04-vps)
+* [Digital Ocean - How To Authenticate Client Computers Using LDAP on an Ubuntu 12.04 VPS](https://www.digitalocean.com/community/tutorials/how-to-authenticate-client-computers-using-ldap-on-an-ubuntu-12-04-vps)
 
 Roles
 =====
