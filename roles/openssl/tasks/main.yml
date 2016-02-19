@@ -28,7 +28,7 @@
     owner: "{{ item.owner|default('root') }}"
     group: "{{ item.group|default('root') }}"
   with_items:
-    - dest: "{{ openssl_pem_dir }}"
+    - dest: "{{ openssl_cert_dir }}"
   when: openssl_create_pem is defined and openssl_create_pem == 'yes'
 
 - name: Ensure ssl cert generator is created
