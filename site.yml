@@ -4,7 +4,10 @@
   become: yes
   gather_facts: yes
   roles:
-    - role: common
+    - role: hostsfile
+      hostsfile_group: "all"
+      hostsfile_iface: "ansible_eth1"
+      hostsfile_static_entries: True
 
 - hosts: master_ldaps
   become: yes
@@ -35,7 +38,7 @@
   roles:
     - role: openssl
     - role: grafana
-      grafana_version: 2.6.0
+      grafana_version: "4.6.3"
       grafana_ini_vars:
         - name: "paths"
         - name: "server"

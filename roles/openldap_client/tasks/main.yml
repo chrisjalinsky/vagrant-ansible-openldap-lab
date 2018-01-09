@@ -6,7 +6,7 @@
     question: "{{ item.question }}"
     value: "{{ item.value }}"
     vtype: "{{ item.vtype }}"
-  with_items: openldap_client_ldap_auth_config
+  with_items: "{{ openldap_client_ldap_auth_config }}"
 
 - name: Install Apt Packages
   apt:

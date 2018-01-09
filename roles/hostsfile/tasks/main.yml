@@ -1,0 +1,36 @@
+---
+
+#- name: Ensure hostname is set to ansible hostname
+#  hostname:
+#    name: "{{ ansible_hostname }}"
+
+- name: Ensure ubuntu 127.0.1.1 loopback is absent
+  lineinfile:
+    regexp: "^127\\.0\\.1\\.1\\s+.*"
+    state: absent
+    dest: "/etc/hosts"
+
+- name: Ensure 127.0.0.1 loopback resolve to hostname doesnt exist
+  lineinfile:
+    regexp: "^127\\.0\\.0\\.1\\s+{{ inventory_hostname }}.*"
+    state: absent
+    dest: "/etc/hosts"
+
+- name: Ensure ubuntu 127.0.0.1 loopback only contains localhost
+  lineinfile:
+    line: "127.0.0.1 localhost"
+    regexp: "^127\\.0\\.0\\.1\\s+localhost$"
+    dest: "/etc/hosts"
+
+- name: Ensure /etc/hosts file has all host entries from specified group
+  when: >
+    hostvars[item] is defined and
+    hostvars[item][hostsfile_iface] is defined and
+    hostvars[item][hostsfile_iface]['ipv4']['address'] is defined and
+    hostvars[item]['ansible_hostname'] is defined and
+    hostsfile_static_entries
+  lineinfile:
+    line: "{{ hostvars[item][hostsfile_iface]['ipv4']['address'] }} {{ item }} {{ hostvars[item]['ansible_hostname'] }}"
+    state: present
+    dest: "/etc/hosts"
+  with_items: "{{ groups[hostsfile_group] }}"

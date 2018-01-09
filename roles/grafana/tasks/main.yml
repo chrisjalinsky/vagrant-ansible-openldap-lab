@@ -12,7 +12,7 @@
 
 - name: Ensure grafana apt repository present
   apt_repository:
-    repo: "deb https://packagecloud.io/grafana/stable/debian wheezy main"
+    repo: "deb https://packagecloud.io/grafana/stable/debian jessie main"
     state: present
 
 - name: Ensure grafana and dependencies present
@@ -26,6 +26,7 @@
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
+    backup: yes
   with_items:
     - src: grafana.conf.j2
       dest: "{{ grafana_conf_dir }}/grafana.ini"

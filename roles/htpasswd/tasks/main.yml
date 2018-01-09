@@ -15,5 +15,5 @@
     path: "{{ htpasswd_path }}"
     name: "{{ item.user }}"
     password: "{{ item.password }}"
-  with_items: htpasswd_users
+  with_items: "{{ htpasswd_users }}"
   #no_log: yes

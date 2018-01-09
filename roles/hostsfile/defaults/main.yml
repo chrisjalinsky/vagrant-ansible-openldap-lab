@@ -1,0 +1,5 @@
+---
+
+hostsfile_iface: "ansible_eth1"
+hostsfile_group: "all"
+hostsfile_static_entries: False

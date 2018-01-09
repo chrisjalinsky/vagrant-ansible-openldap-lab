@@ -6,7 +6,7 @@
     update_cache: yes
     cache_valid_time: 3600
   with_items:
-    - phpldapadmin
+    - "phpldapadmin"
 
 - name: Template phpldapadmin config.php
   template:
@@ -15,7 +15,7 @@
     owner: "{{ item.owner | default('www-data') }}"
     group: "{{ item.group | default('www-data') }}"
     backup: yes
-  with_items: phpldapadmin_templates
+  with_items: "{{ phpldapadmin_templates }}"
 
 - name: Enable Mod SSL
   apache2_module: state=present name=ssl
