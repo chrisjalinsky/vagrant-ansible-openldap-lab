@@ -98,6 +98,13 @@ Default passwords of ```12345``` have been defined for each user.
 
 NOTE: Users associated with the example ```dn: ou=groups,cn=admin,dc=mldap0,dc=lan``` have sudo rights.
 
+OpenSSH Server
+==============
+
+A simple openssh server implementation has been provided. The role will ensure the authorized keys command queries LDAP, looking for the SSH Public Key attribute.
+
+It will fall back to password login, if the SSH public key is not defined for a user.
+
 
 OpenSSL
 =======
@@ -153,24 +160,33 @@ You can log in at:
 http://sldap0.lan:3000
 ```
 Use any user from the test LDAP org:
-
 ```
 user: hgilmore
 password: 12345
 ```
+
 Or for admin rights:
 ```
 user: ftank
 password: 12345
 ```
 
+Users not present in the admin or editors LDAP group will default to the "Viewer" role.
+
+
 openldap_client
 ===============
 
 The host sldap0.lan is an openldap client. You can create users in LDAP and use them to authenticate into the host. This will create home directories for the user, and depending on the /etc/sudoers file on the host, grant them additional privileges.
 
-For example, jballgame is a defined user in the ldif.
+### SSH Public Keys stored in LDAP:
+An ssh public key for ftank has been stored in LDAP. Use it to login:
+```
+ssh -i ./roles/openldap/files/ftank_id_rsa ftank@sldap0.lan
+```
 
+### Fallback password login:
+For example, jballgame is a defined user in the ldif, without a SSH public Key.
 ```
 ssh jballgame@sldap0.lan
 ```
@@ -178,3 +194,8 @@ ssh jballgame@sldap0.lan
 Default passwords of ```12345``` have been defined for each user.
 
 NOTE: Users associated with the example ```dn: ou=groups,cn=admin,dc=mldap0,dc=lan``` have sudo rights.
+
+### Bash Profiles in LDAP
+Similar to the SSH Public Key schema in LDAP, a bash profile schema exists, which allows a user to define his/her own .bashrc file.
+
+If this attribute doesn't exist, the original .bashrc provided by /etc/skel/.bashrc and the pam.d mkhomedir.so will be present.
