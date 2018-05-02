@@ -56,10 +56,11 @@ Roles
 
 * common - builds the host file, since DNS is not available
 * openldap - installs openldap according to the debconf variables set by the role. Builds a base LDAP org
+* openssh_server - installs ssh login support and utilizes the LDAP ssh key login, with a fall back to password, if key is not specified
 * openssl - installs openssl, and creates a unique pem file based on the hostname
 * phpldapadmin - installs htpasswd, phpldapadmin and sets the configuration to the openldap LDAP org
-* openldap_client - installs authentication modules for openldap authentication on client machines, uses the established openldap LDAP org
-* grafana - installs grafana and uses openldap for authentication. Having some issues with setting the org role. Currently, the binddn users have grafana Admin privileges
+* openldap_client - installs authentication modules for openldap authentication on client machines, uses the established openldap LDAP org. Additionally custom schemas have been created to add user bashrc profiles and ssh public keys
+* grafana - installs grafana and uses openldap for authentication. The LDAP groups are mapped into grafana org roles
 
 
 OpenLDAP
@@ -68,6 +69,10 @@ OpenLDAP
 test insecure with the password, passed into the role:
 ```
 ldapsearch -x -H ldap://mldap0.lan:389 -D cn=admin,dc=mldap0,dc=lan -w admin12345
+```
+Or search with host and port as arguments:
+```
+ldapsearch -x -h mldap0.lan -p 389 -b dc=mldap0,dc=lan
 ```
 
 test TLS secure with pw password (This is not working yet, I think it's due to SSL certs and configuration):
@@ -150,13 +155,13 @@ http://sldap0.lan:3000
 Use any user from the test LDAP org:
 
 ```
-user: johnny ballgame
+user: hgilmore
 password: 12345
 ```
 Or for admin rights:
 ```
-user: admin
-password: admin12345
+user: ftank
+password: 12345
 ```
 
 openldap_client
@@ -173,4 +178,3 @@ ssh jballgame@sldap0.lan
 Default passwords of ```12345``` have been defined for each user.
 
 NOTE: Users associated with the example ```dn: ou=groups,cn=admin,dc=mldap0,dc=lan``` have sudo rights.
- 

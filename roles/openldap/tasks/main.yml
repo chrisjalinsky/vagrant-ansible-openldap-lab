@@ -14,9 +14,20 @@
     update_cache: yes
     cache_valid_time: 3600
   with_items:
-    - slapd
-    - ldap-utils
+    - "slapd"
+    - "ldap-utils"
+    - "libsasl2-dev"
+    - "python-dev"
+    - "libldap2-dev"
+    - "libssl-dev"
+    - "python-pip"
 
+- name: Install python modules
+  pip:
+    name: "{{ item }}"
+  with_items:
+    - "python-ldap"
+    - "ssh-ldap-pubkey"
 
 #- name: Generate the root password for ldap
 #  shell: "slappasswd -s {{ openldap_slapd_admin_rootpw }}"
@@ -24,25 +35,44 @@
 
 - name: Template ldap.conf
   template:
+    src: "ldap.conf"
+    dest: "/etc/ldap/ldap.conf"
+    mode: "0754"
+    backup: yes
+
+- name: Template ldif list
+  template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     mode: "0754"
     backup: yes
-  with_items:
-    - src: "ldap.conf"
-      dest: "/etc/ldap/ldap.conf"
-    - src: "base.ldif"
-      dest: "/etc/ldap/base.ldif"
+  with_items: "{{ openldap_ldif_list }}"
+
+- name: Template schema list
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "0754"
+    backup: yes
+  with_items: "{{ openldap_schema_list }}"
 
 #- name: dpkg reconfigure
 #  command: "dpkg-reconfigure -f noninteractive slapd"
 
-- name: add the base domain
-  shell: ldapadd -x -D {{ openldap_slapd_admin }} -w {{ openldap_slapd_admin_rootpw }} -f /etc/ldap/base.ldif && touch /etc/ldap/rootdn_created
+- name: Ensure schemas added before ldifs added
+  shell: "ldapadd -Y EXTERNAL -H ldapi:/// -f {{ item.dest }} && touch {{ item.creates }}"
   args:
-    creates: "/etc/ldap/rootdn_created" 
+    creates: "{{ item.creates }}"
+  with_items: "{{ openldap_schema_list }}"
 
-#
+- name: Ensure ldifs added
+  register: ldifs_added_registration
+  shell: "ldapadd -x -D {{ openldap_slapd_admin }} -w {{ openldap_slapd_admin_rootpw }} -f {{ item.dest }} && touch {{ item.creates }}"
+  args:
+    creates: "{{ item.creates }}"
+  with_items: "{{ openldap_ldif_list }}"
+  failed_when: "ldifs_added_registration.rc > 0 and 'Already exists' not in ldifs_added_registration.stderr"
+
 #- name: Delete the configuration directory
 #  file: path="/etc/ldap/slapd.d" state=absent
 #
@@ -59,4 +89,3 @@
 #
 #- name: restart slapd
 #  service: name=slapd state=restarted
-  

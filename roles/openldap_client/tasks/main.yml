@@ -13,11 +13,14 @@
     name: "{{ item }}"
     update_cache: yes
     cache_valid_time: 3600
-  with_items:
-    - "libpam-ldap"
-    - "nscd"
+  with_items: "{{ openldap_client_apt_packages }}"
 
-- name: Template
+- name: Install python modules
+  pip:
+    name: "{{ item }}"
+  with_items: "{{ openldap_client_pip_packages }}"
+
+- name: Template nss and pam related files
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
@@ -27,6 +30,16 @@
       dest: "/etc/nsswitch.conf"
     - src: "common-session"
       dest: "/etc/pam.d/common-session"
+
+- name: Template specified files
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode|default('0644') }}"
+    owner: "{{ item.owner|default('root') }}"
+    group: "{{ item.group|default('root') }}"
+    backup: "{{ item.backup|default('yes') }}"
+  with_items: "{{ openldap_client_templates }}"
 
 - name: Restart nscd
   service:

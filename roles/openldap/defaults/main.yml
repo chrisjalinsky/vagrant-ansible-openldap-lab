@@ -9,6 +9,19 @@ openldap_slapd_tls_cert: "/etc/openldap/ssl/slapdcert.pem"
 openldap_slapd_tls_key: "/etc/openldap/ssl/slapdkey.pem"
 openldap_slapd_suffix: "dc=acme,dc=org"
 
+openldap_ldif_list:
+  - src: "base.ldif"
+    dest: "/etc/ldap/base.ldif"
+    creates: "/etc/ldap/rootdn_created"
+
+openldap_schema_list:
+  - src: "openssh-lpk.schema"
+    dest: "/etc/ldap/schema/openssh-lpk.schema"
+    creates: "/etc/ldap/openssh_lpk_added"
+  - src: "ldap-profile.schema"
+    dest: "/etc/ldap/schema/ldap-profile.schema"
+    creates: "/etc/ldap/ldap_profile_added"
+
 openldap_debconfs:
   - question: "shared/organization"
     value: "{{ openldap_slapd_domain }}"

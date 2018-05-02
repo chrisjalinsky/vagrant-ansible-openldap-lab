@@ -1,5 +1,6 @@
 [master_ldaps]
 mldap0.lan
+mldap1.lan
 
 [slave_ldaps]
 sldap0.lan

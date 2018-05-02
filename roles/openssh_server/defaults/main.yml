@@ -1,0 +1,11 @@
+---
+
+openssh_server_templates:
+  - src: "sshd_config.j2"
+    dest: "/etc/ssh/sshd_config"
+
+openssh_server_sshd_config_lifs:
+  - line: "AuthorizedKeysCommand /usr/local/bin/ssh-ldap-pubkey-wrapper"
+    regexp: "^AuthorizedKeysCommand.*$"
+  - line: "AuthorizedKeysCommandUser nobody"
+    regexp: "^AuthorizedKeysCommandUser.*$"

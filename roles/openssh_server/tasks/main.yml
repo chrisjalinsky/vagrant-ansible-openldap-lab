@@ -1,0 +1,26 @@
+---
+
+- name: Ensure OpenSSH Server added
+  apt:
+    name: openssh-server
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Ensure global ssh templates written
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner|default('root') }}"
+    group: "{{ item.group|default('root') }}"
+    mode: "{{ item.mode|default('0644') }}"
+    backup: "{{ item.backup|default('yes') }}"
+  with_items: "{{ openssh_server_templates }}"
+  notify: restart_ssh
+
+- name: Ensure lines in file written
+  lineinfile:
+    line: "{{ item.line }}"
+    regexp: "{{ item.regexp }}"
+    dest: "{{ item.dest|default('/etc/ssh/sshd_config') }}"
+  with_items: "{{ openssh_server_sshd_config_lifs }}"
+  notify: restart_ssh

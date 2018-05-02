@@ -1,5 +1,20 @@
 ---
 
+openldap_client_apt_packages:
+  - "ldap-utils"
+  - "libpam-ldap"
+  - "nscd"
+  - "libsasl2-dev"
+  - "python-dev"
+  - "libldap2-dev"
+  - "libssl-dev"
+  - "python-pip"
+  - "dos2unix"
+
+openldap_client_pip_packages:
+  - "python-ldap"
+  - "ssh-ldap-pubkey"
+
 openldap_client_ldap_auth_config:
   - question: "ldap-auth-config/binddn"
     value: "cn=proxyuser,dc=example,dc=net"
@@ -43,3 +58,8 @@ openldap_client_nsswitch_group: "compat"
 openldap_client_nsswitch_shadow: "compat"
 
 openldap_client_pamd_session: []
+
+openldap_client_templates:
+  - src: "ldap_profile.sh.j2"
+    dest: "/usr/local/bin/ldap_profile.sh"
+    mode: "0755"

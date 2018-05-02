@@ -1,0 +1,34 @@
+{% raw %}#!/bin/bash
+set -e
+set -o pipefail
+
+if [[ "$PAM_USER" == "root" ]];
+then
+    exit 0
+else
+    user="$PAM_USER"
+{% endraw %}{% if openldap_client_ldap_auth_config is defined and openldap_client_ldap_auth_config|length > 0 -%}
+{% for q in openldap_client_ldap_auth_config -%}
+  {% if q.question == "ldap-auth-config/ldapns/ldap-server" %}
+    server="{{ q.value | default('localhost') }}"
+  {% elif q.question == "ldap-auth-config/ldapns/base-dn" %}
+    basedn="{{ q.value | default('dc=mldap0,dc=lan') }}"
+  {% endif -%}
+{% endfor -%}
+{% endif -%}{% raw %}
+    port="389"
+    home_dir="/home"
+    user_profile=".bashrc"
+    tmp_file=".tmp_bashrc"
+
+    profile=$(/usr/bin/ldapsearch -x -H "$server:$port" -o ldif-wrap=no  -b $basedn -s sub "(&(objectClass=posixAccount)(uid=$user))" | sed -n 's/^[ \t]*bashProfile::[ \t]*\(.*\)/\1/p' | base64 --decode)
+
+    if [ -n "$profile" ]; then
+        echo "$profile" > "$home_dir/$user/$user_profile"
+        /usr/bin/dos2unix -n "$home_dir/$user/$user_profile" "$home_dir/$user/$tmp_file"
+        mv "$home_dir/$user/$tmp_file" "$home_dir/$user/$user_profile"
+        chmod 0644 "$home_dir/$user/$user_profile"
+        chown "$user" "$home_dir/$user/$user_profile"
+    fi
+fi
+{% endraw %}
