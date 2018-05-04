@@ -15,6 +15,9 @@
     - role: openssl
     - role: openssh_server
     - role: openldap
+      openldap_nodetype: "{{ (inventory_hostname == groups['master_ldaps'][0]) | ternary('provider', 'consumer') }}"
+      openldap_consumers: "{{ groups['master_ldaps'] }}"
+      openldap_consumer_provider_address: "{{ groups['master_ldaps'][0] }}"
       openldap_slapd_tls_cert: "/etc/ssl/{{ inventory_hostname }}/{{ inventory_hostname }}.pem"
       openldap_slapd_tls_key: "/etc/ssl/{{ inventory_hostname }}/{{ inventory_hostname }}.key"
       openldap_slapd_domain: "mldap0.lan"
@@ -26,7 +29,7 @@
         - user: demo
           password: demopw
     - role: phpldapadmin
-      phpldapadmin_server_host: "mldap0.lan"
+      phpldapadmin_server_host: "{{ inventory_hostname }}"
       phpldapadmin_server_base: "dc=mldap0,dc=lan"
       phpldapadmin_login_bind_id: "cn=admin,dc=mldap0,dc=lan"
       phpldapadmin_hide_template_warning: "true"
@@ -66,7 +69,7 @@
           vars:
             - enabled: "false"
             - path: "/var/lib/grafana/dashboards"
-      grafana_ldap_host: "mldap0.lan"
+      grafana_ldap_host: "mldap0.lan mldap1.lan"
       grafana_ldap_bind_dn: "cn=admin,dc=mldap0,dc=lan"
       grafana_ldap_bind_password: admin12345
       grafana_ldap_search_filter: "(uid=%s)"
@@ -102,7 +105,7 @@
           value: "dc=mldap0,dc=lan"
           vtype: "string"
         - question: "ldap-auth-config/ldapns/ldap-server"
-          value: "ldap://mldap0.lan"
+          value: "ldap://mldap0.lan ldap://mldap1.lan"
           vtype: "string"
         - question: "ldap-auth-config/ldapns/ldap_version"
           value: "3"

@@ -1,0 +1,29 @@
+---
+
+- name: Template syncrepl mod list
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "0754"
+    backup: yes
+  with_items: "{{ openldap_consumer_mod_list }}"
+
+- name: Ensure syncrepl mods added
+  shell: "ldapadd -Y EXTERNAL -H ldapi:/// -f {{ item.dest }} && touch {{ item.creates }}"
+  args:
+    creates: "{{ item.creates }}"
+  with_items: "{{ openldap_consumer_mod_list }}"
+
+- name: Template syncrepl ldif list
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "0754"
+    backup: yes
+  with_items: "{{ openldap_consumer_ldif_list }}"
+
+- name: Ensure syncrepl ldif added
+  shell: "ldapadd -Y EXTERNAL -H ldapi:/// -f {{ item.dest }} && touch {{ item.creates }}"
+  args:
+    creates: "{{ item.creates }}"
+  with_items: "{{ openldap_consumer_ldif_list }}"

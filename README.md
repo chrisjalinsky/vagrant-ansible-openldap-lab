@@ -1,7 +1,7 @@
 Lab Environment for openLDAP Servers and Client Testing
 =======================================================
 
-This is an lab environment for testing openLDAP features Ubuntu 14.04 LTS. 2 Hosts are initially defined in the Vagrantfile, but can be adjusted to expand. The goal is to build this to use SSL features for ldap, i.e, ldaps:// but this is currently not working. Basic authentication is working.
+This is an lab environment for testing openLDAP features Ubuntu 14.04 LTS. 3 Hosts are initially defined in the Vagrantfile, but can be adjusted to expand. The goal is to build this to use replication features for ldap. Basic authentication is supported, with the goal of adding secure later.
 
 Additional goals include extracting all configuration into the Ansible playbook to work on any set of hosts defined in inventory. The playbook vars will need to be updated when changing hosts. It is not dynamically updated by the inventory file yet.
 
@@ -20,6 +20,7 @@ vagrant plugin install vagrant-hostmanager
 
 ```
 192.168.1.50 mldap0.lan
+192.168.1.51 mldap1.lan
 192.168.1.60 sldap0.lan
 ```
 
@@ -55,7 +56,7 @@ Roles
 =====
 
 * common - builds the host file, since DNS is not available
-* openldap - installs openldap according to the debconf variables set by the role. Builds a base LDAP org
+* openldap - installs openldap according to the debconf variables set by the role. Builds a base LDAP org.
 * openssh_server - installs ssh login support and utilizes the LDAP ssh key login, with a fall back to password, if key is not specified
 * openssl - installs openssl, and creates a unique pem file based on the hostname
 * phpldapadmin - installs htpasswd, phpldapadmin and sets the configuration to the openldap LDAP org
@@ -65,6 +66,8 @@ Roles
 
 OpenLDAP
 ========
+
+This role sets up a provider and consumer for failover. This can be tested by powering off the mldap0.lan VM, and sshing into a VM with a defined user in LDAP.  Also, try logging into Grafana.
 
 test insecure with the password, passed into the role:
 ```

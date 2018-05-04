@@ -1,0 +1,29 @@
+---
+
+- name: Template syncprov mod list
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "0754"
+    backup: yes
+  with_items: "{{ openldap_provider_mod_list }}"
+
+- name: Ensure syncprov mods added
+  shell: "ldapadd -Y EXTERNAL -H ldapi:/// -f {{ item.dest }} && touch {{ item.creates }}"
+  args:
+    creates: "{{ item.creates }}"
+  with_items: "{{ openldap_provider_mod_list }}"
+
+- name: Template syncprov ldif list
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "0754"
+    backup: yes
+  with_items: "{{ openldap_provider_ldif_list }}"
+
+- name: Ensure syncprov ldif added
+  shell: "ldapadd -Y EXTERNAL -H ldapi:/// -f {{ item.dest }} && touch {{ item.creates }}"
+  args:
+    creates: "{{ item.creates }}"
+  with_items: "{{ openldap_provider_ldif_list }}"

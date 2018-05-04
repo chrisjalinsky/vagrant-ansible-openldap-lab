@@ -73,6 +73,11 @@
   with_items: "{{ openldap_ldif_list }}"
   failed_when: "ldifs_added_registration.rc > 0 and 'Already exists' not in ldifs_added_registration.stderr"
 
+# replication tasks
+
+- name: Include repl tasks
+  include_tasks: "{{ openldap_nodetype }}.yml"
+
 #- name: Delete the configuration directory
 #  file: path="/etc/ldap/slapd.d" state=absent
 #

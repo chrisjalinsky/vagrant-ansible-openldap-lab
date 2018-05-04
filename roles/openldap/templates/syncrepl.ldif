@@ -1,0 +1,15 @@
+{% raw %}dn: olcDatabase={1}{% endraw %}{{ openldap_slapd_backend }}{% raw %},cn=config
+changetype: modify
+add: olcSyncRepl
+olcSyncRepl: rid=00{% endraw %}{% for host in openldap_consumers %}{% if inventory_hostname == host %}{{ loop.index }}{% endif %}{% endfor %}{% raw %}
+  provider=ldap://{% endraw %}{{ openldap_consumer_provider_address }}:{{ openldap_consumer_provider_port }}{% raw %}/
+  bindmethod=simple
+  binddn="{% endraw %}{{ openldap_slapd_admin }}{% raw %}"
+  credentials={% endraw %}{{ openldap_slapd_admin_rootpw }}{% raw %}
+  searchbase="{% endraw %}{{ openldap_slapd_suffix }}{% raw %}"
+  scope=sub
+  schemachecking=on
+  type=refreshAndPersist
+  retry="30 5 300 3"
+  interval=00:00:05:00
+{% endraw %}
